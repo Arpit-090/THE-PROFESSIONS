@@ -1,0 +1,59 @@
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import App from "./App.jsx";
+import "./index.css";
+import { createBrowserRouter,RouterProvider } from "react-router-dom";
+import { createRoot } from "react-dom/client";
+import Signup from "./pages/SignUp.jsx";
+import Login from "./pages/Login.jsx";
+import Base from "./pages/Base.jsx";
+import HomePage from "./pages/HomePage.jsx";
+import About from "./pages/About.jsx";
+import ContactMe from "./pages/ContactMe.jsx";
+
+
+const router = createBrowserRouter(           //defining the router variable used in router provider
+  [
+    {
+      path:'/',
+      element: <App />,
+      children: [
+        {
+          path:"",
+          element:<HomePage />
+        },
+        {
+          path:'signup',
+          element:<Signup />
+        },
+        {
+          path:"login",
+          element:<Login />
+        },
+        {
+          path:"base",
+          element:<Base />
+        },
+        {
+          path:"about",
+          element:<About />
+        },
+        {
+          path:"contact",
+          element:<ContactMe />
+        }
+      ]
+    }
+]
+)
+
+
+createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+   < RouterProvider router={router} /> 
+  </React.StrictMode>,                     
+  // using router provider for importting or rendering the file 
+  // because files are not rendering in App.jsx due to use of react router dom    
+)
+
