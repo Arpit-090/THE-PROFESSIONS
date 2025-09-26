@@ -3,6 +3,13 @@
 Create useful .gitignore files for your project
 Jul 15, 2021 | 65032 views
 
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
 # Logs
 logs
 *.log

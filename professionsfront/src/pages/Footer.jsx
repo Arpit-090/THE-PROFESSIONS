@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
+import logo from '../assets/images/logo.png'
  function Footer() {
     return (
         <footer className="bg-white border-y">
@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
                     <div className="mb-6 md:mb-0">
                         <Link to="/" className="flex items-center">
                             <img
-                                src="https://alexharkness.com/wp-content/uploads/2020/06/logo-2.png"
+                                src={logo}
                                 className="mr-3 h-16"
                                 alt="Logo"
                             />

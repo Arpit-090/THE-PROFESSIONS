@@ -6,7 +6,7 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
 
-      <div className="h-full w-full">
+      <div className="h-100% w-full">
         <img src={BgImg} alt="bgImage" />
       </div>
       {/* Navbar */}

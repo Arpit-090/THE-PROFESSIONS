@@ -5,9 +5,11 @@ import { User } from "../models/user.model.js";
 
 export const jwtVarify = asynchandler(async(req,res,next)=>{
    try {
-    const token= req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ","")
+    const token= req.cookies?.accessToken || req.header("Authorization")
    //  acessToken from acesstoken
- 
+      console.log("this is req",req)
+      console.log("this is req header", req.header)
+      console.log("this is ", token)
     if(!token){
      throw new ApiError(401,"unauthorized request")
     }

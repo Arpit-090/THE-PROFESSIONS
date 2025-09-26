@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const fields = [
   "Software Developer",
@@ -6,6 +7,13 @@ const fields = [
   "Data Analytics",
   "Data Science",
   "AI",
+  "AI and ML",
+  "DEVOPS",
+  "Electrical engineering",
+  "Mechanical",
+  "Software dev using C++",
+  "QT",
+  "Data Analytics",
   "Music",
   "F1",
   "Football",
@@ -19,16 +27,42 @@ const fields = [
 
 const Base = () => {
   const [selectedFields, setSelectedFields] = useState([]);
-
+  const navigate=useNavigate();
   const toggleField = (field) => {
     if (selectedFields.includes(field)) {
       setSelectedFields(selectedFields.filter((f) => f !== field));
     } else {
       setSelectedFields([...selectedFields, field]);
     }
+    
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+     
+     try {
+      const res = await fetch('http://localhost:3000/api/v1/users//update-interests', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(selectedFields),
+      });
+
+      const result = await res.json();
+      console.log(result);
+
+      if (res.ok) {
+        alert("Successfully changed the interests 🎉");
+        navigate('/base')
+        // localStorage.setItem("token", result.token);  // agar token mil raha hai
+      } else {
+        alert(result.message || "Login failed ❌");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong in changing the interets functions ❌");
+    }
     console.log("Selected Fields:", selectedFields);
     // You can send selectedFields to backend here
   };

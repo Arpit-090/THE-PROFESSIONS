@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import  {AuthContext}  from "../context/AuthContext";
 
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login,accessstoken } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     identifier: "", // username or email
     password: "",
@@ -30,10 +33,14 @@ const Login = () => {
 
       const result = await res.json();
       console.log(result);
-
       if (res.ok) {
         alert("Login Successful 🎉");
-        navigate('/base')
+        const {user}  = result;
+        console.log(result.message)
+        console.log(result.message.accessToken)  // use refresh token instead
+        login(user)
+        accessstoken(result.message.accessToken)
+        navigate('/same-interests')
         // localStorage.setItem("token", result.token);  // agar token mil raha hai
       } else {
         alert(result.message || "Login failed ❌");

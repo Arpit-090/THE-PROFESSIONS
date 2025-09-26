@@ -2,10 +2,15 @@ import { app } from "./app.js";
 import { connectDB } from "./DB/Index.js";
 // import dotenv from "dotenv";
 import 'dotenv/config';
+import cors from 'cors';
 
 // Load environment variables
 // dotenv.config();
 
+app.use(cors({
+  origin: 'http://localhost:5173', // your frontend
+  credentials:true
+}));
 
 connectDB()
   .then(() => {

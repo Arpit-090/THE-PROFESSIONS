@@ -209,8 +209,8 @@ const refreshAccessToken = asynchandler(async (req, res) => {
   }
 
   return res.status(200)
-    .Cookie("accessToken", accessToken, options)
-    .Cookie("refreshToken", refreshToken, options)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
     .json(new ApiRisponse(200, { accessToken, refreshToken }, "succesfully created new tokens"))
 
 })
@@ -458,6 +458,8 @@ const fetchChats = asynchandler(async(req,res)=>{
 ////////////////////////// finding user with same interests //////////////////
  const getUsersWithSameInterests = asynchandler(async (req, res) => {
   try {
+
+    console.log("here is the errrrrrrrrrrrrrorrrrrrrrrrrrrrrrrrrrr",req.user);
     const loggedInUser = await User.findById(req.user._id);
     if (!loggedInUser) {
       throw new ApiError(404, "User not found");
@@ -535,7 +537,7 @@ const fetchChats = asynchandler(async(req,res)=>{
 });
 //delete interests feilds
 const deleteUserInterests = asynchandler(async(req,res)=>{
-  const user = req.body._id
+  const user = req.user._id
   if(!user){
     throw new ApiError(400,"please login first")
   }

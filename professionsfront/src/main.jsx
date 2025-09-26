@@ -11,6 +11,9 @@ import Base from "./pages/Base.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import About from "./pages/About.jsx";
 import ContactMe from "./pages/ContactMe.jsx";
+import SameInterestUsers from "./pages/SameInterestUsers.jsx";
+import ProtectedRoute from "./context/ProtectedRoutes.jsx";
+import { AuthProvider } from "./context/AuthContext.jsx";
 
 
 const router = createBrowserRouter(           //defining the router variable used in router provider
@@ -21,7 +24,8 @@ const router = createBrowserRouter(           //defining the router variable use
       children: [
         {
           path:"",
-          element:<HomePage />
+          element:
+              <HomePage />
         },
         {
           path:'signup',
@@ -33,7 +37,17 @@ const router = createBrowserRouter(           //defining the router variable use
         },
         {
           path:"base",
-          element:<Base />
+          element:( <ProtectedRoute>
+             <Base />
+          </ProtectedRoute>
+          )
+        },
+        {
+          path:"same-interests",
+          element:( <ProtectedRoute>
+             <SameInterestUsers />
+          </ProtectedRoute>
+          )
         },
         {
           path:"about",
@@ -51,7 +65,9 @@ const router = createBrowserRouter(           //defining the router variable use
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
+    <AuthProvider>
    < RouterProvider router={router} /> 
+   </AuthProvider>
   </React.StrictMode>,                     
   // using router provider for importting or rendering the file 
   // because files are not rendering in App.jsx due to use of react router dom    
