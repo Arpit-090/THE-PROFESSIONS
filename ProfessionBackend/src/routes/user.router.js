@@ -13,7 +13,8 @@ import {
     getUsersWithSameInterests,
     updateUserInterests,
     deleteUser,
-    deleteUserInterests
+    deleteUserInterests,
+    getProfileofloggedinUser
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { jwtVarify } from "../middlewares/auth.middleware.js";
@@ -32,12 +33,13 @@ router.route("/login").post(logInUser)
 
 //secured routes means rotes used when user is authenticated or logged in
 
-router.route('/getProfile').post(jwtVarify,getUser)
 router.route("/logout").post(jwtVarify, logOutUser)
 router.route("/refresh-Token").post(refreshAccessToken)
 // change current password 
 router.route("/changePassword").post(jwtVarify, changeUserPassword)
 
+router.route("/getProfile/:userId").get(jwtVarify,getUser)
+router.route("/getProfileOfLoggedIn").get(jwtVarify,getProfileofloggedinUser)
 ////////////////////// routes for chats ///////////////////////////
 
 router.route("/all-chats").get(jwtVarify, fetchChats)

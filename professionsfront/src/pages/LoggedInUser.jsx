@@ -1,10 +1,10 @@
 // src/pages/ProfilePage.jsx
 import React, { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
-const ProfilePage = () => {
-  const { userId } = useParams(); // userId from /profile/:id
+const LoggedInUser = () => {
+ // userId from /profile/:id
   const { accessToken } = useContext(AuthContext);
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
@@ -13,7 +13,7 @@ const ProfilePage = () => {
     const fetchProfile = async () => {
       try {
         const res = await fetch(
-          `/api/v1/users/getProfile/${userId}`,
+          "/api/v1/users/getProfileOfLoggedIn",
           {
             method:"GET",
             headers: {
@@ -33,7 +33,7 @@ const ProfilePage = () => {
     };
 
     fetchProfile();
-  }, [userId, accessToken]);
+  }, [accessToken]);
 
   if (error) return <p className="text-red-500 text-center">{error}</p>;
   if (!user) return <p className="text-gray-500 text-center">Loading...</p>;
@@ -83,4 +83,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
+export default LoggedInUser;

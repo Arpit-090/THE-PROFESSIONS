@@ -16,6 +16,8 @@ import ProtectedRoute from "./context/ProtectedRoutes.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import ProfilePage from "./pages/Profile.jsx";
 import ChatPage from "./pages/Chatpage.jsx";
+import LoggedInUser from "./pages/LoggedInUser.jsx";
+
 
 
 const router = createBrowserRouter(           //defining the router variable used in router provider
@@ -52,9 +54,16 @@ const router = createBrowserRouter(           //defining the router variable use
           )
         },
         {
-          path:"profile/:id",
+          path:"profile/:userId",
           element:( <ProtectedRoute>
              <ProfilePage />
+          </ProtectedRoute>
+          )
+        },
+        {
+          path:"getprofile",
+          element:( <ProtectedRoute>
+             <LoggedInUser />
           </ProtectedRoute>
           )
         },

@@ -48,7 +48,25 @@ const generateAccessTokenAndRefreshTocken = async (userId) => {
 };
 //get users for testing
 const getUser = asynchandler(async (req, res) => {
-  const userId = req.user?._id || req.params.userId;
+
+  const userId =  req.params.userId;
+
+  if (!userId) {
+    return res.status(400).json(new ApiRisponse(400, "User ID is required"));
+  }
+
+  const foundUser = await User.findById(userId).select("-password"); // don't send password
+
+  if (!foundUser) {
+    return res.status(404).json(new ApiRisponse(404, "User not found"));
+  }
+
+  return res.json(new ApiRisponse(200, "Found user details", foundUser));
+});
+
+const getProfileofloggedinUser = asynchandler(async (req, res) => {
+
+  const userId =  req.user._id;
 
   if (!userId) {
     return res.status(400).json(new ApiRisponse(400, "User ID is required"));
@@ -635,5 +653,5 @@ export {
   getCurrentUser, refreshAccessToken, updateUserinformation,
   updateCoverImage, updateAvatar,getUser,updateUserInterests,
   allMessages,sendMessage,fetchChats,accessChat,getUsersWithSameInterests
-  ,deleteUser,deleteUserInterests
+  ,deleteUser,deleteUserInterests,getProfileofloggedinUser
 }

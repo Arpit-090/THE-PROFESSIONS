@@ -6,6 +6,10 @@ import { AuthContext, } from "../context/AuthContext";
 function Header(){
     const navigate = useNavigate()
      const {user,logout} = useContext(AuthContext)
+
+    //  const handleProfile = async()=>{
+    //     navigate('/getprofile')
+    //  }
      const logOutUser = async(e)=>{
         e.preventDefault();
         const loggedOut =  await fetch("http://localhost:3000/api/v1/users/logout" ,{
@@ -121,7 +125,8 @@ function Header(){
                     
                     <div className="flex items-center lg:order-2">
                         <Link
-                            to="/profile"
+                        // onClick={handleProfile}
+                            to="/getprofile"
                             className="text-gray-800 hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 focus:outline-none"
                         >
                             Profile
