@@ -7,10 +7,10 @@ import cors from 'cors';
 // Load environment variables
 // dotenv.config();
 
-app.use(cors({
-  origin: 'http://localhost:5173', // your frontend
-  credentials:true
-}));
+// app.use(cors({
+//   origin: 'http://localhost:5173', // your frontend
+//   credentials:true
+// }));
 
 connectDB()
   .then(() => {
