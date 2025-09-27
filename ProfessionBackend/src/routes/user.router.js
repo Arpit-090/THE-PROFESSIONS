@@ -19,20 +19,20 @@ import { upload } from "../middlewares/multer.middleware.js";
 import { jwtVarify } from "../middlewares/auth.middleware.js";
 const router = Router()
 
-router.route('/get').get(getUser)
 router.route("/register").post
-    (upload.fields([
-        { name: "avatar", maxCount: 1 },
-        { name: "coverImage", maxCount: 1 }
-    ])          // this is the multer middleware used to upload files{upload}
-        , registerUser)
+(upload.fields([
+    { name: "avatar", maxCount: 1 },
+    { name: "coverImage", maxCount: 1 }
+])          // this is the multer middleware used to upload files{upload}
+, registerUser)
 /*router.route("/register")||.post(||upload.feilds([])||,registeruser) 
-    for routing     ||post method || middleware       || method when route is on register   */
+for routing     ||post method || middleware       || method when route is on register   */
 
 router.route("/login").post(logInUser)
 
 //secured routes means rotes used when user is authenticated or logged in
 
+router.route('/getProfile').post(jwtVarify,getUser)
 router.route("/logout").post(jwtVarify, logOutUser)
 router.route("/refresh-Token").post(refreshAccessToken)
 // change current password 

@@ -47,11 +47,22 @@ const generateAccessTokenAndRefreshTocken = async (userId) => {
   }
 };
 //get users for testing
-const getUser = asynchandler(async(req , res)=>{
-   const foundUsers =await User.find({}) 
-  res.json(new ApiRisponse(200,{foundUsers},foundUsers))
-  ;
-})
+const getUser = asynchandler(async (req, res) => {
+  const userId = req.user?._id || req.params.userId;
+
+  if (!userId) {
+    return res.status(400).json(new ApiRisponse(400, "User ID is required"));
+  }
+
+  const foundUser = await User.findById(userId).select("-password"); // don't send password
+
+  if (!foundUser) {
+    return res.status(404).json(new ApiRisponse(404, "User not found"));
+  }
+
+  return res.json(new ApiRisponse(200, "Found user details", foundUser));
+});
+
 // register function
 const registerUser = asynchandler(async (req, res) => {
 
@@ -442,7 +453,7 @@ const accessChat = asynchandler(async(req,res)=>{
   
 })
 
-// for community chats (inly fetching chats)
+// for community chats (only fetching chats)
 
 const fetchChats = asynchandler(async(req,res)=>{
    try {
@@ -462,7 +473,7 @@ const fetchChats = asynchandler(async(req,res)=>{
  const getUsersWithSameInterests = asynchandler(async (req, res) => {
   try {
 
-    console.log("here is the errrrrrrrrrrrrrorrrrrrrrrrrrrrrrrrrrr",req.user);
+    // console.log("here is the errrrrrrrrrrrrrorrrrrrrrrrrrrrrrrrrrr",req.user);
     const loggedInUser = await User.findById(req.user._id);
     if (!loggedInUser) {
       throw new ApiError(404, "User not found");
@@ -598,7 +609,7 @@ const sendMessage = asynchandler(async(req,res)=>{
       .populate("chat");
 
     res.status(200)
-    .json(new ApiRisponse(200,{messages},"successfully sent all messages"));
+    .json(new ApiRisponse(200,{messages},"successfully fetch all messages"));
   } catch (error) {
     throw new ApiError(400,"failed to fetch all achats in allmesg function")
   }

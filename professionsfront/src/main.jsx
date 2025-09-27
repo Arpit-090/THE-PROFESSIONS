@@ -14,6 +14,8 @@ import ContactMe from "./pages/ContactMe.jsx";
 import SameInterestUsers from "./pages/SameInterestUsers.jsx";
 import ProtectedRoute from "./context/ProtectedRoutes.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
+import ProfilePage from "./pages/Profile.jsx";
+import ChatPage from "./pages/Chatpage.jsx";
 
 
 const router = createBrowserRouter(           //defining the router variable used in router provider
@@ -46,6 +48,20 @@ const router = createBrowserRouter(           //defining the router variable use
           path:"same-interests",
           element:( <ProtectedRoute>
              <SameInterestUsers />
+          </ProtectedRoute>
+          )
+        },
+        {
+          path:"profile/:id",
+          element:( <ProtectedRoute>
+             <ProfilePage />
+          </ProtectedRoute>
+          )
+        },
+        {
+          path:"chat/:chatId",
+          element:( <ProtectedRoute>
+             <ChatPage />
           </ProtectedRoute>
           )
         },
