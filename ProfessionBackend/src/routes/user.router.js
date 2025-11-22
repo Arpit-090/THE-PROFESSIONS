@@ -42,8 +42,8 @@ router.route("/getProfile/:userId").get(jwtVarify,getUser)
 router.route("/getProfileOfLoggedIn").get(jwtVarify,getProfileofloggedinUser)
 ////////////////////// routes for chats ///////////////////////////
 
-router.route("/all-chats").get(jwtVarify, fetchChats)
-router.route("/chat").post(jwtVarify, accessChat)
+router.route("/all-chats").get(jwtVarify, fetchChats)  //fetching all your chats
+router.route("/chat").post(jwtVarify, accessChat)   //fetching your individual chat 
 router.route("/sendMsg").post(jwtVarify, sendMessage)
 router.route("/getMsg/:chatId").get(jwtVarify, allMessages)
 // route for getting same interest users

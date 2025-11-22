@@ -432,6 +432,14 @@ const updateCoverImage = asynchandler(async (req, res) => {
 //   return res.status(200)
 //   .json(new ApiRisponse(200,channel[0],"channel fetched successfull"))
 // })
+
+
+
+
+
+
+
+
 //////////////////////////////////// CHAT METHODS ///////////////////////////////////////
 
 // finding old and creating new chats

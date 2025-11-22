@@ -17,6 +17,7 @@ import { AuthProvider } from "./context/AuthContext.jsx";
 import ProfilePage from "./pages/Profile.jsx";
 import ChatPage from "./pages/Chatpage.jsx";
 import LoggedInUser from "./pages/LoggedInUser.jsx";
+import AllChats from "./pages/AllChats.jsx";
 
 
 
@@ -71,6 +72,13 @@ const router = createBrowserRouter(           //defining the router variable use
           path:"chat/:chatId",
           element:( <ProtectedRoute>
              <ChatPage />
+          </ProtectedRoute>
+          )
+        },
+        {
+          path:"all-chats",
+          element:( <ProtectedRoute>
+             <AllChats />
           </ProtectedRoute>
           )
         },

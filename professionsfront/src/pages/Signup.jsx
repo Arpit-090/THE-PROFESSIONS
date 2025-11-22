@@ -49,6 +49,7 @@ const Signup = () => {
       const res = await fetch('http://localhost:3000/api/v1/users/register', {
         method: "POST",
         body: data,
+        credentials:"include"
       });
 
       const result = await res.json();
