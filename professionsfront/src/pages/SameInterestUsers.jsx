@@ -60,6 +60,11 @@ const SameInterestUsers = () => {
     }
   };
 
+  // Handle call Button
+  const handleCall =  (userId)=>{
+    navigate(`/call/${userId}`); 
+    // will load the call page 
+  }
   if (error) return <p className="text-red-500 text-center">{error}</p>;
 
   return (
@@ -122,6 +127,12 @@ const SameInterestUsers = () => {
                     onClick={() => handleMessage(user._id)}
                   >
                     Message
+                  </button>
+                  <button
+                    className="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition"
+                    onClick={() => handleCall(user._id)}
+                  >
+                    Call
                   </button>
                 </div>
               </div>
