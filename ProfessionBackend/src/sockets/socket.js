@@ -6,11 +6,15 @@ const connectToSocket = (io)=>{
             console.log("socket is connected",socket.id);
 
         socket.on('join',(userId)=>{
-            socket.join(userId)
+            socket.join(userId);
         });
 
-        socket.on('call-user',({to,from,rooID})=>{
-            io.to(to).emit('incoming-call',({from,rooID}));
+        socket.on('call-user',({to,from,roomID})=>{
+            io.to(to).emit('incoming-call',({from,roomID}));
+        });
+      
+        socket.on('send-message',({to,from,message})=>{
+            io.to(to).emit('receive-message',({from,message}));
         });
 
         socket.on('error',(error)=>{

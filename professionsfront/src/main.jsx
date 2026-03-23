@@ -32,6 +32,10 @@ const router = createBrowserRouter(           //defining the router variable use
           path:"",
           element:
               <HomePage />
+        },{
+          path:'test',
+          element:
+          <Call/>
         },
         {
           path:'signup',

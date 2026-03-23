@@ -36,15 +36,18 @@ const Login = () => {
 
 
       const result = await res.json();
-      console.log(result);
+      // console.log(result);
       if (res.ok) {
         alert("Login Successful 🎉");
-        const {user}  = result;
-        console.log(result.message)
+        const userData  = result.message.user;
+        // const sample = "arpit";
+           login(userData);
+        console.log(result.message.user)
         console.log(result.message.user._id)
         connectToSocket(result.message.user._id);
         console.log(result.message.accessToken)  // use refresh token instead
-        login(user)
+        // login(sample)
+     
         accessstoken(result.message.accessToken)
         navigate('/same-interests')
         // localStorage.setItem("token", result.token);  // agar token mil raha hai

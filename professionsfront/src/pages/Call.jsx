@@ -1,56 +1,77 @@
-import React from "react";
-import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
+import React, { useState, useContext } from "react";
+import {emitCall} from "../socket/socketFrontControllers.js";
 import { useParams } from "react-router-dom";
-
+import { AuthContext } from "../context/AuthContext";
 
 const Call = () => {
+  const [roomID, setroomID] = useState("");
+  const [calling, setCalling] = useState(false); // 🔥 new state
 
-        const {userId} = useParams();
-        const userID = userId;
+  const { userId } = useParams();
+  const { user } = useContext(AuthContext);
 
-        const roomID = Date.now().toString();
+  const handleCall = (e) => {
+    e.preventDefault();
 
-        let myMeeting = async (element) => {
-                // generate Kit Token
-                const appID = 431468416;
-                const serverSecret = "704948ea8e7eaf78ba7d573001286b12";
-                const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, userID);
+    setCalling(true); // start loading
 
-                // Create instance object from Kit Token.
-                const zp = ZegoUIKitPrebuilt.create(kitToken);
+    const currentUser = user._id;
+    const toCall = userId;
 
-                // start the call
-                zp.joinRoom({
-                        container: element,
-                        sharedLinks: [
-                                {
-                                        name: 'Personal link',
-                                        url:
-                                                window.location.protocol + '//' +
-                                                window.location.host + window.location.pathname +
-                                                '?roomID=' +
-                                                roomID,
-                                },
-                        ],
-                        scenario: {
-                                mode: ZegoUIKitPrebuilt.OneONoneCall, // To implemt group calls, modify the parameter here to [ZegoUIKitPrebuilt.GroupCall].
-                        },
-                });
-        }
+    emitCall(toCall, currentUser, roomID);
 
+    //  replace later with real response
+    setTimeout(() => {
+      setCalling(false);
+    }, 5000);
+  };
 
+  return (
+    <div className="h-screen bg-gray-900 flex flex-col justify-between">
 
+      {/* Video Section */}
+      <div className="flex-1 flex items-center justify-center relative">
+        
+        <div className="w-[70%] h-[60%] bg-gray-700 rounded-xl flex items-center justify-center text-white text-lg">
+          {calling ? "📞 Calling..." : "User Video"}
+        </div>
 
-        return (<>
-                <h1 className="text-gray-500 text-center font-bold">call here</h1>
+        <div className="w-36 h-28 bg-gray-600 rounded-lg absolute bottom-5 right-5 flex items-center justify-center text-white text-sm">
+          You
+        </div>
+      </div>
 
-                <div
-                        className="myCallContainer"
-                        ref={myMeeting}
-                        style={{ width: '100vw', height: '100vh' }}
-                ></div>
-        </>)
+      {/* Controls */}
+      <form onSubmit={handleCall}>
+        <div className="flex gap-4 items-center justify-center pb-6">
 
-}
+          <input
+            type="text"
+            placeholder="Enter Room ID"
+            value={roomID}
+            onChange={(e) => setroomID(e.target.value)}
+            className="px-3 py-2 rounded bg-white text-black"
+          />
+
+          <button
+            disabled={calling}
+            className={`p-4 rounded-full text-xl text-white transition 
+              ${calling ? "bg-gray-500 cursor-not-allowed" : "bg-green-600 hover:bg-green-500"}`}
+          >
+            {calling ? "Calling..." : "Start Call 📞"}
+          </button>
+
+        </div>
+
+        {/* Status */}
+        {calling && (
+          <p className="text-center text-gray-300 mb-4 animate-pulse">
+            Connecting to user...
+          </p>
+        )}
+      </form>
+    </div>
+  );
+};
 
 export default Call;

@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
     setaccessToken(token)
   }
   const login = (userData) => {
+    console.log(userData)
     setUser(userData || true); // store user info or just "true"
   };
 

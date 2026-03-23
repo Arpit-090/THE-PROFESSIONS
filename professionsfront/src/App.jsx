@@ -7,12 +7,14 @@ import HomePage from "./pages/HomePage";
 import { Outlet } from "react-router-dom";
 import Header from "./pages/Header";
 import Footer from "./pages/Footer";
+import CallListener from "./pages/callListener";
 
 function App() {
   return (
      <>
       <div>
       <Header/>
+      <CallListener/>
       <Outlet /> 
          {/* when we use AppOrLayout file in main.jsx it only make changrs in outlet not in header or footer bcs we use them as a layout or outlet */}
       <Footer />
