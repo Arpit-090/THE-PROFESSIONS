@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import "./index.css";
-import { createBrowserRouter,RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { createRoot } from "react-dom/client";
 import Signup from "./pages/SignUp.jsx";
 import Login from "./pages/Login.jsx";
@@ -14,6 +14,7 @@ import ContactMe from "./pages/ContactMe.jsx";
 import SameInterestUsers from "./pages/SameInterestUsers.jsx";
 import ProtectedRoute from "./context/ProtectedRoutes.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
+import { WebRtcProvider } from "./webRTC/webRTCContext.jsx"
 import ProfilePage from "./pages/Profile.jsx";
 import ChatPage from "./pages/Chatpage.jsx";
 import LoggedInUser from "./pages/LoggedInUser.jsx";
@@ -25,95 +26,97 @@ import Call from "./pages/Call.jsx";
 const router = createBrowserRouter(           //defining the router variable used in router provider
   [
     {
-      path:'/',
+      path: '/',
       element: <App />,
       children: [
         {
-          path:"",
+          path: "",
           element:
-              <HomePage />
-        },{
-          path:'test',
+            <HomePage />
+        }, {
+          path: 'test',
           element:
-          <Call/>
+            <Call />
         },
         {
-          path:'signup',
-          element:<Signup />
+          path: 'signup',
+          element: <Signup />
         },
         {
-          path:"login",
-          element:<Login />
+          path: "login",
+          element: <Login />
         },
         {
-          path:"base",
-          element:( <ProtectedRoute>
-             <Base />
+          path: "base",
+          element: (<ProtectedRoute>
+            <Base />
           </ProtectedRoute>
           )
         },
         {
-          path:"same-interests",
-          element:( <ProtectedRoute>
-             <SameInterestUsers />
+          path: "same-interests",
+          element: (<ProtectedRoute>
+            <SameInterestUsers />
           </ProtectedRoute>
           )
         },
         {
-          path:"profile/:userId",
-          element:( <ProtectedRoute>
-             <ProfilePage />
+          path: "profile/:userId",
+          element: (<ProtectedRoute>
+            <ProfilePage />
           </ProtectedRoute>
           )
         },
         {
-          path:"getprofile",
-          element:( <ProtectedRoute>
-             <LoggedInUser />
+          path: "getprofile",
+          element: (<ProtectedRoute>
+            <LoggedInUser />
           </ProtectedRoute>
           )
         },
         {
-          path:"chat/:chatId",
-          element:( <ProtectedRoute>
-             <ChatPage />
+          path: "chat/:chatId",
+          element: (<ProtectedRoute>
+            <ChatPage />
           </ProtectedRoute>
           )
         },
         {
-          path:"all-chats",
-          element:( <ProtectedRoute>
-             <AllChats />
+          path: "all-chats",
+          element: (<ProtectedRoute>
+            <AllChats />
           </ProtectedRoute>
           )
         },
         {
-          path:"call/:userId",
-          element:( <ProtectedRoute>
-             <Call />
+          path: "call/:userId",
+          element: (<ProtectedRoute>
+            <Call />
           </ProtectedRoute>
           )
         },
         {
-          path:"about",
-          element:<About />
+          path: "about",
+          element: <About />
         },
         {
-          path:"contact",
-          element:<ContactMe />
+          path: "contact",
+          element: <ContactMe />
         }
       ]
     }
-]
+  ]
 )
 
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <AuthProvider>
-   < RouterProvider router={router} /> 
-   </AuthProvider>
-  </React.StrictMode>,                     
+      <WebRtcProvider>
+        < RouterProvider router={router} />
+      </WebRtcProvider>
+    </AuthProvider>
+  </React.StrictMode>,
   // using router provider for importting or rendering the file 
   // because files are not rendering in App.jsx due to use of react router dom    
 )

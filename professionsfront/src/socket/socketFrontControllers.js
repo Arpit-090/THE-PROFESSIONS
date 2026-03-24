@@ -34,6 +34,12 @@ import { getSocket } from "./socketConnect";
     socket.off('incoming-call',callback);
  }
 
+ // connect ice-condidate for room
+ const connectICE = (to,candidate)=>{
+    const socket = getSocket();
+    if(!socket) return;
+    socket.emit('ice-condidate',{to,candidate})
+ }
  // message functions through sockets
 const emitMsg =(to,from,msg)=>{
     const socket = getSocket();
@@ -55,6 +61,12 @@ const emitMsg =(to,from,msg)=>{
     socket.on('receive-message',callback);
  }
 
+ const sendingOffer = (to,from,offer)=>{
+    const socket = getSocket();
+    if(!socket) return;
+    socket.emit('offer',{to,from,offer});
+    console.log("offer send to ", to);
+ }
  
 
 
@@ -64,6 +76,8 @@ const emitMsg =(to,from,msg)=>{
     incommingCall,
     offIncommingCall,
     emitMsg,
-    receiveMsg
+    receiveMsg,
+    sendingOffer,
+    connectICE
 
  };
