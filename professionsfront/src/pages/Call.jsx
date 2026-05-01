@@ -1,144 +1,202 @@
 import React, { useState, useContext, useRef, useEffect } from "react";
-import { emitCall,sendingOffer} from "../socket/socketFrontControllers.js";
-import { useParams } from "react-router-dom";
+import { emitCall, sendingOffer } from "../socket/socketFrontControllers.js";
+import { useParams, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { WebRtcContext } from "../webRTC/webRTCContext.jsx"
+import { WebRtcContext } from "../webRTC/webRTCContext.jsx";
 import { getSocket } from "../socket/socketConnect.js";
-
 
 const Call = () => {
   const { user } = useContext(AuthContext);
-  const { getLocalStream, createPeerConnection, addTracks,getPeerConnection } = useContext(WebRtcContext);
+  const {
+    getLocalStream,
+    createPeerConnection,
+    addTracks,
+    getPeerConnection,
+    resetPeerConnection,
+    remoteStream,        // ✅ get remote stream directly from context
+  } = useContext(WebRtcContext);
+
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
-  const [roomID, setroomID] = useState("");
-  const [calling, setCalling] = useState(false); // 🔥 new state
- const { userId } = useParams();
-// creating local stream and make it alive
+
+  const [calling, setCalling] = useState(false);
+  const [connected, setConnected] = useState(false);
+
+  const { userId } = useParams();
+  const navigate = useNavigate();
+
+  // ── Local stream + PC setup ───────────────────────────────────────────────
   useEffect(() => {
     const start = async () => {
-      const stream = await getLocalStream()
+      const stream = await getLocalStream();
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = stream;
       }
-    }
+
+      // Register ontrack — but we also rely on remoteStream from context
+      // in case ontrack already fired before this component mounted (callee case)
+      createPeerConnection(userId, (incomingStream) => {
+        console.log("✅ ontrack fired in Call.jsx");
+        if (remoteVideoRef.current) {
+          remoteVideoRef.current.srcObject = incomingStream;
+          setConnected(true);
+        }
+      });
+
+      addTracks();
+    };
+
     start();
-  })
-// get peer connection and manage remote stream keep track of response of remote user
+  }, []);
+
+  // ✅ KEY FIX: If remoteStream already exists in context when this component
+  // mounts (callee case — ontrack fired before navigation), attach it directly
+  // This solves the timing issue where ontrack fires before Call.jsx mounts
   useEffect(() => {
-    const pc=  createPeerConnection(user._id,(remoteStream)=>{
-         if (remoteVideoRef.current) {
+    if (remoteStream && remoteVideoRef.current) {
+      console.log("✅ Attaching already-available remote stream from context");
       remoteVideoRef.current.srcObject = remoteStream;
+      setConnected(true);
     }
-    });
-    if(pc)
-    addTracks()
-  })
+  }, [remoteStream]); // runs whenever remoteStream updates in context
 
-  // use effect for checking the offer has come and create a answer and start the video sharing
-
-  useEffect(()=>{
+  // ── Socket: answer + ICE ──────────────────────────────────────────────────
+  useEffect(() => {
     const socket = getSocket();
-    socket.on('offer',async(data)=>{
-      const pc = createPeerConnection();
-      await pc.setRemoteDescription(data.offer);
 
-      const answer = await pc.createAnswer();
-      await pc.setLocalDescription(answer);
-      if(!answer) console.log("failed to create answer");
-      
+    socket.on("answer", async (data) => {
+      const pc = getPeerConnection();
+      if (pc && pc.signalingState === "have-local-offer") {
+        await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
+        console.log("✅ Answer set — call connected");
+        setCalling(false);
+        setConnected(true);
+      }
+    });
 
-      socket.emit('answer',{answer,to:user._id})
-      console.log("create answer and emitted to:",user._id);
-    })
+    socket.on("ice-condidate", async (data) => {
+      const pc = getPeerConnection();
+      if (pc && data.candidate) {
+        try {
+          await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+        } catch (err) {
+          console.error("ICE error:", err);
+        }
+      }
+    });
 
-    socket.on('answer',async(data)=>{
-      const pc =getPeerConnection();
-      await pc.setRemoteDescription(data.answer);
-      console.log("got the answer from user 1 also");
-    })
+    return () => {
+      socket.off("answer");
+      socket.off("ice-condidate");
+    };
+  }, []);
 
-    return ()=>{
-      socket.off('offer');
-      socket.off('answer');
+  // ── Start call (caller only) ──────────────────────────────────────────────
+  const handleCall = async () => {
+    const pc = getPeerConnection();
+    if (!pc) return;
+
+    setCalling(true);
+    emitCall(userId, user._id);
+
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+    sendingOffer(userId, user._id, offer);
+
+    console.log("📞 Offer sent to:", userId);
+  };
+
+  // ── End call ──────────────────────────────────────────────────────────────
+  const handleEndCall = () => {
+    // Stop all local tracks so camera/mic turns off
+    const pc = getPeerConnection();
+    if (pc) {
+      pc.getSenders().forEach((sender) => {
+        if (sender.track) sender.track.stop();
+      });
     }
-  })
 
-
-  const handleCall = async(e) => {
-    e.preventDefault();
-
-    setCalling(true); // start loading
-
-    const currentUser = user._id;
-    const toCall = userId;
-    emitCall(toCall, currentUser, roomID);
-    
-  const pc = getPeerConnection();
-  const offer = await pc.createOffer();
-  await pc.setLocalDescription(offer);
-    sendingOffer(toCall,currentUser,offer);
-
-
-    //  replace later with real response
-    setTimeout(() => {
-      setCalling(false);
-    }, 5000);
+    resetPeerConnection();
+    navigate(-1); // go back to previous page
+    console.log("🔴 Call ended");
   };
 
   return (
-    <div className="h-screen bg-gray-900 flex flex-col justify-between">
+    <div className="h-screen bg-gray-950 flex flex-col items-center justify-center gap-4 p-4 relative">
 
-      {/* Video Section */}
-      <div className="flex-1 flex items-center justify-center relative">
+      {/* Status badge */}
+      <div
+        className={`text-xs px-3 py-1 rounded-full font-medium ${
+          connected
+            ? "bg-green-900 text-green-300"
+            : "bg-gray-800 text-gray-400"
+        }`}
+      >
+        {connected ? "🟢 Connected" : "⚪ Waiting for connection..."}
+      </div>
 
-        <div className="w-[70%] h-[60%] bg-gray-700 rounded-xl flex items-center justify-center text-white text-lg">
+      {/* Videos */}
+      <div className="flex flex-col gap-3 w-full max-w-xl">
+
+        {/* Remote video — the other person */}
+        <div className="relative w-full">
+          <video
+            ref={remoteVideoRef}
+            autoPlay
+            playsInline
+            className="w-full h-64 bg-gray-800 rounded-2xl object-cover"
+          />
+          {!connected && (
+            <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm">
+              Waiting for other person...
+            </div>
+          )}
+          <span className="absolute bottom-2 left-3 text-xs text-white bg-black/50 px-2 py-0.5 rounded">
+            Remote
+          </span>
+        </div>
+
+        {/* Local video — you */}
+        <div className="relative w-full">
           <video
             ref={localVideoRef}
             autoPlay
             muted
-          ></video>
-          {calling ? "📞 Calling..." : "User Video"}
-        </div>
-
-        <div className="w-36 h-28 bg-gray-600 rounded-lg absolute bottom-5 right-5 flex items-center justify-center text-white text-sm">
-          <video
-            ref={remoteVideoRef}
-            autoPlay
-            className="w-full h-full bg-black"
+            playsInline
+            className="w-full h-40 bg-gray-800 rounded-2xl object-cover"
           />
+          <span className="absolute bottom-2 left-3 text-xs text-white bg-black/50 px-2 py-0.5 rounded">
+            You
+          </span>
         </div>
       </div>
 
       {/* Controls */}
-      <form onSubmit={handleCall}>
-        <div className="flex gap-4 items-center justify-center pb-6">
-
-          <input
-            type="text"
-            placeholder="Enter Room ID"
-            value={roomID}
-            onChange={(e) => setroomID(e.target.value)}
-            className="px-3 py-2 rounded bg-white text-black"
-          />
-
+      <div className="flex gap-3 mt-2">
+        {/* Start call button — only for caller, hidden once connected */}
+        {!connected && (
           <button
+            onClick={handleCall}
             disabled={calling}
-            className={`p-4 rounded-full text-xl text-white transition 
-              ${calling ? "bg-gray-500 cursor-not-allowed" : "bg-green-600 hover:bg-green-500"}`}
+            className={`px-6 py-3 rounded-full text-white font-semibold transition
+              ${
+                calling
+                  ? "bg-gray-600 cursor-not-allowed"
+                  : "bg-green-600 hover:bg-green-500 active:scale-95"
+              }`}
           >
-            {calling ? "Calling..." : "Start Call 📞"}
+            {calling ? "📞 Calling..." : "Start Call 📞"}
           </button>
-
-        </div>
-
-        {/* Status */}
-        {calling && (
-          <p className="text-center text-gray-300 mb-4 animate-pulse">
-            Connecting to user...
-          </p>
         )}
-      </form>
+
+        {/* ✅ End call button — always visible */}
+        <button
+          onClick={handleEndCall}
+          className="px-6 py-3 rounded-full bg-red-600 hover:bg-red-500 text-white font-semibold transition active:scale-95"
+        >
+          🔴 End Call
+        </button>
+      </div>
     </div>
   );
 };
