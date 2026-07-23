@@ -44,7 +44,7 @@ const CallListener = () => {
         if (prev <= 1) { clearInterval(intervalRef.current); return 0; }
         return prev - 1;
       });
-    }, 1000);
+    }, 2000);
     timeoutRef.current = setTimeout(() => {
       console.log("⏰ Auto-rejected");
       resetCall();
