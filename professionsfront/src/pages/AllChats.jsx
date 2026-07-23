@@ -3,6 +3,8 @@ import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext"; // to get current user
 
+const API_URL = import.meta.env.VITE_API_URL ||  "http://localhost:3000";
+
 const AllChats = () => {
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,7 +15,7 @@ const AllChats = () => {
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const res = await fetch("/api/v1/users/all-chats", {
+        const res = await fetch(`${API_URL}/api/v1/users/all-chats`, {
           method: "GET",
           credentials: "include",
         });

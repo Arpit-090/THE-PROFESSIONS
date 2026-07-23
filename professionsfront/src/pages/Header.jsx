@@ -3,6 +3,8 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import logo from '../assets/images/logo.png'
 import { AuthContext, } from "../context/AuthContext";
 import { ChatBubbleLeftRightIcon } from "@heroicons/react/24/outline";
+const API_URL = import.meta.env.VITE_API_URL ||  "http://localhost:3000";
+
 // import { logOutUser } from "../../../ProfessionBackend/src/controllers/user.controller";
 function Header() {
     const navigate = useNavigate()
@@ -13,7 +15,7 @@ function Header() {
     //  }
     const logOutUser = async (e) => {
         e.preventDefault();
-        const loggedOut = await fetch("/api/v1/users/logout", {
+        const loggedOut = await fetch(`${API_URL}/api/v1/users/logout`, {
             method: "GET",
             credentials: "include"
         });

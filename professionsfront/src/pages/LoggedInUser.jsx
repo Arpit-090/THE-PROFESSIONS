@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useContext } from "react";
 // import { useParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+const API_URL = import.meta.env.VITE_API_URL ||  "http://localhost:3000";
 
 const LoggedInUser = () => {
  // userId from /profile/:id
@@ -13,7 +14,7 @@ const LoggedInUser = () => {
     const fetchProfile = async () => {
       try {
         const res = await fetch(
-          "/api/v1/users/getProfileOfLoggedIn",
+          `${API_URL}/api/v1/users/getProfileOfLoggedIn`,
           {
             method:"GET",
             headers: {

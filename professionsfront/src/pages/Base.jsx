@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL ||  "http://localhost:3000";
+
 const fields = [
   "Software Developer",
   "DevOps Engineer",
@@ -41,7 +43,7 @@ const Base = () => {
     e.preventDefault();
      
      try {
-      const res = await fetch('/api/v1/users//update-interests', {
+      const res = await fetch(`${API_URL}/api/v1/users//update-interests`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

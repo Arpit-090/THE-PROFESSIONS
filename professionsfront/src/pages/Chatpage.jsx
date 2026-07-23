@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+const API_URL = import.meta.env.VITE_API_URL ||  "http://localhost:3000";
 
 const ChatPage = () => {
   const { chatId } = useParams(); // /chat/:chatId
@@ -15,7 +16,7 @@ const ChatPage = () => {
     const fetchMessages = async () => {
       try {
         const res = await fetch(
-          `/api/v1/users/getMsg/${chatId}`,
+          `${API_URL}/api/v1/users/getMsg/${chatId}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -40,7 +41,7 @@ const ChatPage = () => {
     if (!newMessage.trim()) return;
 
     try {
-      const res = await fetch("/api/v1/users/sendMsg", {
+      const res = await fetch(`${API_URL}/api/v1/users/sendMsg`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

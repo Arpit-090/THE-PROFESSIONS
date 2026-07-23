@@ -1,8 +1,8 @@
 import {io} from 'socket.io-client';
-
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 let socket;
 const connectToSocket =(userId)=>{
-    socket = io("http://localhost:3000");
+    socket = io(API_URL);
 
     socket.on("connect",()=>{
         console.log("connected successfully with sockets ", socket.id);

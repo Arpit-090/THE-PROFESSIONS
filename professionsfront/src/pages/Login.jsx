@@ -4,6 +4,7 @@ import { useContext } from "react";
 import  {AuthContext}  from "../context/AuthContext";
 import  connectToSocket  from "../socket/socketConnect.js";
 
+const API_URL = import.meta.env.VITE_API_URL ||  "http://localhost:3000";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/v1/users/login', {
+      const res = await fetch(`${API_URL}/api/v1/users/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

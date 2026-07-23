@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { WebRtcContext } from "../webRTC/webRTCContext.jsx";
 import { getSocket } from "../socket/socketConnect.js";
+const API_URL = import.meta.env.VITE_API_URL ||  "http://localhost:3000";
 
 const Call = () => {
   const { user } = useContext(AuthContext);

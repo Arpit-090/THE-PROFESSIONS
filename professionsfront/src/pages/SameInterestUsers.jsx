@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL ||  "http://localhost:3000";
 
 const SameInterestUsers = () => {
   const [users, setUsers] = useState([]);
@@ -12,7 +13,7 @@ const SameInterestUsers = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await fetch("/api/v1/users/same-interests", {
+        const res = await fetch(`${API_URL}/api/v1/users/same-interests`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
@@ -39,7 +40,7 @@ const SameInterestUsers = () => {
   // 🔹 Handle Message Button
   const handleMessage = async (userId) => {
     try {
-      const res = await fetch("/api/v1/users/chat", {
+      const res = await fetch(`${API_URL}/api/v1/users/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
