@@ -26,9 +26,8 @@ connectToSocket(io);
 
 connectDB()
   .then(() => { 
-    const PORT =  3000;
-    server.listen(PORT, () => {
-      console.log(`⚙️ Server is running at port: ${PORT}`);
+    server.listen(process.env.PORT || 3000, () => {
+      console.log(`⚙️ Server is running at port: ${process.env.PORT}`);
     });
   })
   .catch((error) => {
