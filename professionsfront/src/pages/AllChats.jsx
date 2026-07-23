@@ -13,7 +13,7 @@ const AllChats = () => {
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/v1/users/all-chats", {
+        const res = await fetch("/api/v1/users/all-chats", {
           method: "GET",
           credentials: "include",
         });

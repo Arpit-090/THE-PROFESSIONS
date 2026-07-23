@@ -12,7 +12,7 @@ const SameInterestUsers = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/v1/users/same-interests", {
+        const res = await fetch("/api/v1/users/same-interests", {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
@@ -39,7 +39,7 @@ const SameInterestUsers = () => {
   // 🔹 Handle Message Button
   const handleMessage = async (userId) => {
     try {
-      const res = await fetch("http://localhost:3000/api/v1/users/chat", {
+      const res = await fetch("/api/v1/users/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

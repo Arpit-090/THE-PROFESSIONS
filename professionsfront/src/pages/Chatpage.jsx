@@ -15,7 +15,7 @@ const ChatPage = () => {
     const fetchMessages = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3000/api/v1/users/getMsg/${chatId}`,
+          `/api/v1/users/getMsg/${chatId}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -40,7 +40,7 @@ const ChatPage = () => {
     if (!newMessage.trim()) return;
 
     try {
-      const res = await fetch("http://localhost:3000/api/v1/users/sendMsg", {
+      const res = await fetch("/api/v1/users/sendMsg", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

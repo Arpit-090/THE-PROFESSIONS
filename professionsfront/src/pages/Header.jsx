@@ -13,7 +13,7 @@ function Header() {
     //  }
     const logOutUser = async (e) => {
         e.preventDefault();
-        const loggedOut = await fetch("http://localhost:3000/api/v1/users/logout", {
+        const loggedOut = await fetch("/api/v1/users/logout", {
             method: "GET",
             credentials: "include"
         });

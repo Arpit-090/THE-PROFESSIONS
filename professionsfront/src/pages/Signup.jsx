@@ -46,7 +46,7 @@ const Signup = () => {
     interestsArray.forEach((interest) => data.append("interests[]", interest));
 
     try {
-      const res = await fetch('http://localhost:3000/api/v1/users/register', {
+      const res = await fetch('/api/v1/users/register', {
         method: "POST",
         body: data,
         credentials:"include"
