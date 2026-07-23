@@ -9,7 +9,8 @@ dotenv.config();
 const app = express()
 
 app.use(cors({
-  origin: "http://localhost:5173", // exact frontend
+  // origin: "http://localhost:5173", for local
+  origin: "https://the-professions.vercel.app", // for deployement
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
